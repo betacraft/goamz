@@ -17,7 +17,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"github.com/AdRoll/goamz/aws"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -25,6 +24,8 @@ import (
 	"sort"
 	"strconv"
 	"time"
+
+	"github.com/betacraft/goamz/aws"
 )
 
 const debug = false
@@ -1758,6 +1759,24 @@ func (ec2 *EC2) DescribeInternetGateways(InternetGatewayIds []string, filter *Fi
 	addParamsList(params, "InternetGatewayId", InternetGatewayIds)
 	filter.addParams(params)
 	resp = &DescribeInternetGatewaysResp{}
+	if err = ec2.query(params, resp); err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+
+type ReplaceRouteResp struct {
+	RequestId string `xml:"requestId"`
+	Return    bool   `xml:"return"`
+}
+
+func (ec2 *EC2) ReplaceRoute(routeTableId, cidrBlock, gatewayId string) (resp *ReplaceRouteResp, err error) {
+	params := makeParams("ReplaceRoute")
+	addParamsList(params, "RouteTableId", []string{routeTableId})
+	addParamsList(params, "DestinationCidrBlock", []string{cidrBlock})
+	addParamsList(params, "GatewayId", []string{gatewayId})
+
+	resp = &ReplaceRouteResp{}
 	if err = ec2.query(params, resp); err != nil {
 		return nil, err
 	}
