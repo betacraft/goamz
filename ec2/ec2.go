@@ -210,6 +210,12 @@ func addParamsList(params map[string]string, label string, ids []string) {
 	}
 }
 
+func addCustomParams(params, custom map[string]string) {
+	for k, v := range custom {
+		params[k] = v
+	}
+}
+
 // ----------------------------------------------------------------------------
 // Instance management functions and types.
 
@@ -1536,9 +1542,10 @@ type DescribeInstanceStatusResponse struct {
 	InstanceStatuses []InstanceStatus `xml:"instanceStatusSet>item"`
 }
 
-func (ec2 *EC2) DescribeInstanceStatus(instIds []string, filter *Filter) (resp *DescribeInstanceStatusResponse, err error) {
+func (ec2 *EC2) DescribeInstanceStatus(instIds []string, filter *Filter, custParams map[string]string) (resp *DescribeInstanceStatusResponse, err error) {
 	params := makeParams("DescribeInstanceStatus")
 	addParamsList(params, "InstanceId", instIds)
+	addCustomParams(params, custParams)
 	filter.addParams(params)
 	resp = &DescribeInstanceStatusResponse{}
 	err = ec2.query(params, resp)
