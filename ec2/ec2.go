@@ -1690,7 +1690,7 @@ type DescribeVpcsResp struct {
 
 func (ec2 *EC2) DescribeVpcs(vpcIds []string, filter *Filter) (resp *DescribeVpcsResp, err error) {
 	params := makeParams("DescribeVpcs")
-	addParamsList(params, "vpcId", vpcIds)
+	addParamsList(params, "VpcId", vpcIds)
 	filter.addParams(params)
 	resp = &DescribeVpcsResp{}
 	err = ec2.query(params, resp)
