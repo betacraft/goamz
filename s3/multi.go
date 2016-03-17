@@ -85,7 +85,7 @@ func (b *Bucket) ListMulti(prefix, delim string) (multis []*Multi, prefixes []st
 		params["upload-id-marker"] = []string{resp.NextUploadIdMarker}
 		attempt = attempts.Start() // Last request worked.
 	}
-	panic("unreachable")
+	return nil, nil, errors.New("unreachable bucket")
 }
 
 // Multi returns a multipart upload handler for the provided key
@@ -178,7 +178,7 @@ func (m *Multi) PutPartCopy(n int, options CopyOptions, source string) (*CopyObj
 		}
 		return resp, Part{n, resp.ETag, sourceMeta.ContentLength}, nil
 	}
-	panic("unreachable")
+	return nil, Part{}, errors.New("unreachable bucket")
 }
 
 // PutPart sends part n of the multipart upload, reading all the content from r.
@@ -232,7 +232,7 @@ func (m *Multi) putPart(n int, r io.ReadSeeker, partSize int64, md5b64 string) (
 		}
 		return Part{n, etag, partSize}, nil
 	}
-	panic("unreachable")
+	return Part{}, errors.New("unreachable bucket")
 }
 
 func seekerInfo(r io.ReadSeeker) (size int64, md5hex string, md5b64 string, err error) {
@@ -317,7 +317,7 @@ func (m *Multi) ListPartsFull(partNumberMarker int, maxParts int) ([]Part, error
 		params["part-number-marker"] = []string{resp.NextPartNumberMarker}
 		attempt = attempts.Start() // Last request worked.
 	}
-	panic("unreachable")
+	return nil, errors.New("unreachable bucket")
 }
 
 type ReaderAtSeeker interface {
@@ -469,7 +469,7 @@ func (m *Multi) Complete(parts []Part) error {
 
 		return errors.New("Invalid XML struct returned: " + resp.XMLName.Local)
 	}
-	panic("unreachable")
+	return errors.New("unreachable bucket")
 }
 
 // Abort deletes an unifinished multipart upload and any previously
@@ -504,5 +504,5 @@ func (m *Multi) Abort() error {
 		}
 		return err
 	}
-	panic("unreachable")
+	return errors.New("unreachable bucket")
 }

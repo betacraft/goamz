@@ -17,6 +17,7 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -274,7 +275,7 @@ func (b *Bucket) GetResponseWithHeaders(path string, headers map[string][]string
 		}
 		return resp, nil
 	}
-	panic("unreachable")
+	return nil, errors.New("unreachable bucket")
 }
 
 // Exists checks whether or not an object exists on an S3 bucket using a HEAD request.
